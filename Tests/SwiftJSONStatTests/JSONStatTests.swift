@@ -26,10 +26,11 @@ final class JSONStatTests: XCTestCase {
         let json = try loadExampleJSON(named: "denmark")
         let decoder = JSONStat.decoder
         let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
-        guard case .v1(let jsonStatV1) = jsonStat else {
+        print(jsonStat)
+        guard case .v1(let jsonStatV1) = jsonStat, case .multipleDatasets(let datasets) = jsonStatV1 else {
             XCTFail(); return
         }
-        XCTAssertEqual(jsonStatV1.dataset.dimensionsInfo.dimensions.count, 3)
+        XCTAssertEqual(datasets.values.first?.dimensionsInfo.dimensions.count, 3)
     }
 
     func testDecodeGalicia() throws {
@@ -50,6 +51,26 @@ final class JSONStatTests: XCTestCase {
             XCTFail(); return
         }
         XCTAssertEqual(dataset.dimensions.count, 1)
+    }
+    
+    func testDecodeOECD_Canada() throws {
+        let json = try loadExampleJSON(named: "oecd-canada")
+        let decoder = JSONStat.decoder
+        let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
+        guard case .v1(let jsonStatV1) = jsonStat, case .multipleDatasets(let datasets) = jsonStatV1 else {
+            XCTFail(); return
+        }
+        XCTAssertEqual(datasets["oecd"]?.dimensionsInfo.dimensions.count, 3)
+    }
+    
+    func testDecodeOECD_Canada_COL() throws {
+        let json = try loadExampleJSON(named: "oecd-canada-col")
+        let decoder = JSONStat.decoder
+        let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
+        guard case .v2(let jsonStatV2) = jsonStat, case .collection(let dataset) = jsonStatV2.responseClass else {
+            XCTFail(); return
+        }
+        XCTAssertEqual(dataset.links?["item"]?.count, 2)
     }
 
     func testDecodeOrder() throws {

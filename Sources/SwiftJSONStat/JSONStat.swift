@@ -109,30 +109,25 @@ public enum JSONStat: Codable {
         case collection(JSONStat.ResponseClass.Collection)
 
         public init(from decoder: Decoder) throws {
-            do {
-                let container = try decoder.container(keyedBy: CodingKeys.self)
-                guard let responseClass = try container.decodeIfPresent(String.self, forKey: .class) else {
-                    let type = try container.decode(String.self, forKey: .type)
-                    let href = try container.decode(URL.self, forKey: .href)
-                    self = .nonJSONStat(type: type, href: href)
-                    return
-                }
-                guard container.contains(.value) else {
-                    let href = try container.decode(URL.self, forKey: .href)
-                    let label = try container.decode(String.self, forKey: .label)
-                    self = .jsonStat(class: responseClass, href: href, label: label)
-                    return
-                }
-                if responseClass == "dataset" {
-                    self = try .dataset(.init(from: decoder))
-                } else if responseClass == "collection" {
-                    self = try .collection(.init(from: decoder))
-                } else {
-                    throw DecodingError.dataCorruptedError(forKey: .class, in: container, debugDescription: "Unknown class for link")
-                }
-            } catch {
-                print(error)
-                throw error
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            guard let responseClass = try container.decodeIfPresent(String.self, forKey: .class) else {
+                let type = try container.decode(String.self, forKey: .type)
+                let href = try container.decode(URL.self, forKey: .href)
+                self = .nonJSONStat(type: type, href: href)
+                return
+            }
+            guard container.contains(.value) else {
+                let href = try container.decode(URL.self, forKey: .href)
+                let label = try container.decode(String.self, forKey: .label)
+                self = .jsonStat(class: responseClass, href: href, label: label)
+                return
+            }
+            if responseClass == "dataset" {
+                self = try .dataset(.init(from: decoder))
+            } else if responseClass == "collection" {
+                self = try .collection(.init(from: decoder))
+            } else {
+                throw DecodingError.dataCorruptedError(forKey: .class, in: container, debugDescription: "Unknown class for link")
             }
         }
 
@@ -279,8 +274,33 @@ public enum JSONStat: Codable {
     public typealias Status = DictionaryBasedValues<String, String>
 }
 
-public struct JSONStatV1: Codable {
-    public var dataset: Dataset
+public enum JSONStatV1: Codable {
+    case singleDataset(Dataset)
+    case multipleDatasets([String: Dataset])
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: DynamicCodingKeys.self)
+        if container.contains(.init(stringValue: "value")!) {
+            self = try .singleDataset(Dataset(from: decoder))
+        } else {
+            let container = try decoder.singleValueContainer()
+            self = try .multipleDatasets(container.decode([String: Dataset].self))
+        }
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        switch self {
+        case .singleDataset(let dataset):
+            try dataset.encode(to: encoder)
+        case .multipleDatasets(let datasets):
+            var container = encoder.singleValueContainer()
+            try container.encode(datasets)
+        }
+    }
+
+    enum CodingKeys: CodingKey {
+        case value
+    }
 
     public struct Dataset: Codable {
         public var dimensionsInfo: DimensionsInfo
