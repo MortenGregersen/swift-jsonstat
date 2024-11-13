@@ -54,12 +54,12 @@ public enum JSONStat: Codable {
             default: throw JSONStat.DecodeError.unsupportedClass
             }
         }
-        
+
         public struct Collection: Codable {
             public var updated: Date?
             public var href: URL?
             public var links: [String: [Link]]?
-            
+
             private enum CodingKeys: String, CodingKey {
                 case updated
                 case href
@@ -260,7 +260,21 @@ public enum JSONStat: Codable {
         }
     }
 
-    public typealias Values = DictionaryBasedValues<Double, Double>
+    public enum Values: Codable {
+        case numbers(DictionaryBasedValues<Double, Double>)
+        case strings(DictionaryBasedValues<String, String>)
+
+        public init(from decoder: any Decoder) throws {
+            if let numbers = try? DictionaryBasedValues<Double, Double>(from: decoder) {
+                self = .numbers(numbers)
+            } else if let strings = try? DictionaryBasedValues<String, String>(from: decoder) {
+                self = .strings(strings)
+            } else {
+                throw DecodeError.unsupportedValues
+            }
+        }
+    }
+
     public typealias Indices = DictionaryBasedValues<String, Int>
     public typealias Status = DictionaryBasedValues<String, String>
 }

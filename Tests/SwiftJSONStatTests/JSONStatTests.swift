@@ -11,7 +11,7 @@ final class JSONStatTests: XCTestCase {
         }
         XCTAssertEqual(dataset.dimensions.count, 5)
     }
-    
+
     func testDecodeCollection() throws {
         let json = try loadExampleJSON(named: "collection")
         let decoder = JSONStat.decoder
@@ -19,6 +19,7 @@ final class JSONStatTests: XCTestCase {
         guard case .v2(let jsonStatV2) = jsonStat, case .collection(let collection) = jsonStatV2.responseClass else {
             XCTFail(); return
         }
+        XCTAssertEqual(collection.links?["item"]?.count, 8)
     }
 
     func testDecodeDenmark() throws {
@@ -40,7 +41,7 @@ final class JSONStatTests: XCTestCase {
         }
         XCTAssertEqual(dataset.dimensions.count, 6)
     }
-    
+
     func testDecodeHierarchy() throws {
         let json = try loadExampleJSON(named: "hierarchy")
         let decoder = JSONStat.decoder
@@ -49,6 +50,21 @@ final class JSONStatTests: XCTestCase {
             XCTFail(); return
         }
         XCTAssertEqual(dataset.dimensions.count, 1)
+    }
+
+    func testDecodeOrder() throws {
+        let json = try loadExampleJSON(named: "order")
+        let decoder = JSONStat.decoder
+        let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
+        guard case .v2(let jsonStatV2) = jsonStat, case .dataset(let dataset) = jsonStatV2.responseClass else {
+            XCTFail(); return
+        }
+        XCTAssertEqual(dataset.dimensions.count, 3)
+        guard case .strings(let stringValues) = dataset.values,
+              case .array(let values) = stringValues else {
+            throw JSONStat.DecodeError.unsupportedValues
+        }
+        XCTAssertEqual(values.count, 24)
     }
 
     private func loadExampleJSON(named fileName: String) throws -> String {
