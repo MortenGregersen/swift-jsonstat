@@ -67,7 +67,7 @@ public enum JSONStat: Codable {
             public var updated: Date?
             public var source: String?
             public var href: URL?
-            public var links: [String: Link]?
+            public var links: [String: [Link]]?
             public var notes: [String]?
 
             private enum CodingKeys: String, CodingKey {
@@ -98,23 +98,28 @@ public enum JSONStat: Codable {
         case dataset(JSONStat.ResponseClass.Dataset)
 
         public init(from decoder: Decoder) throws {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-            guard let responseClass = try container.decodeIfPresent(String.self, forKey: .class) else {
-                let type = try container.decode(String.self, forKey: .type)
-                let href = try container.decode(URL.self, forKey: .href)
-                self = .nonJSONStat(type: type, href: href)
-                return
+            do {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                guard let responseClass = try container.decodeIfPresent(String.self, forKey: .class) else {
+                    let type = try container.decode(String.self, forKey: .type)
+                    let href = try container.decode(URL.self, forKey: .href)
+                    self = .nonJSONStat(type: type, href: href)
+                    return
+                }
+                guard responseClass == "dataset" else {
+                    throw DecodingError.dataCorruptedError(forKey: .class, in: container, debugDescription: "Unknown class for link")
+                }
+                guard container.contains(.value) else {
+                    let href = try container.decode(URL.self, forKey: .href)
+                    let label = try container.decode(String.self, forKey: .label)
+                    self = .jsonStat(class: responseClass, href: href, label: label)
+                    return
+                }
+                self = try .dataset(.init(from: decoder))
+            } catch {
+                print(error)
+                throw error
             }
-            guard responseClass == "dataset" else {
-                throw DecodingError.dataCorruptedError(forKey: .class, in: container, debugDescription: "Unknown class for link")
-            }
-            guard container.contains(.value) else {
-                let href = try container.decode(URL.self, forKey: .href)
-                let label = try container.decode(String.self, forKey: .label)
-                self = .jsonStat(class: responseClass, href: href, label: label)
-                return
-            }
-            self = try .dataset(.init(from: decoder))
         }
 
         public func encode(to encoder: Encoder) throws {
