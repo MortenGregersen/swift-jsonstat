@@ -66,6 +66,36 @@ final class JSONStatTests: XCTestCase {
         }
         XCTAssertEqual(values.count, 24)
     }
+    
+    func testDecodeUS_GSP() throws {
+        let json = try loadExampleJSON(named: "us-gsp")
+        let decoder = JSONStat.decoder
+        let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
+        guard case .v2(let jsonStatV2) = jsonStat, case .dataset(let dataset) = jsonStatV2.responseClass else {
+            XCTFail(); return
+        }
+        XCTAssertEqual(dataset.dimensions.count, 3)
+    }
+    
+    func testDecodeUS_Labor() throws {
+        let json = try loadExampleJSON(named: "us-labor")
+        let decoder = JSONStat.decoder
+        let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
+        guard case .v2(let jsonStatV2) = jsonStat, case .dataset(let dataset) = jsonStatV2.responseClass else {
+            XCTFail(); return
+        }
+        XCTAssertEqual(dataset.dimensions.count, 3)
+    }
+    
+    func testDecodeUS_UNR() throws {
+        let json = try loadExampleJSON(named: "us-unr")
+        let decoder = JSONStat.decoder
+        let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
+        guard case .v2(let jsonStatV2) = jsonStat, case .dataset(let dataset) = jsonStatV2.responseClass else {
+            XCTFail(); return
+        }
+        XCTAssertEqual(dataset.dimensions.count, 3)
+    }
 
     private func loadExampleJSON(named fileName: String) throws -> String {
         let filePath = Bundle.module.path(forResource: "Examples/\(fileName)", ofType: "json")!
