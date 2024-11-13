@@ -6,13 +6,12 @@ public enum JSONStat: Codable {
 
     public static let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
-        let isoDateFormatter = ISO8601DateFormatter()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         decoder.dateDecodingStrategy = .custom { decoder in
             let container = try decoder.singleValueContainer()
             let dateString = try container.decode(String.self)
-            if let date = isoDateFormatter.date(from: dateString) {
+            if let date = ISO8601DateFormatter().date(from: dateString) {
                 return date
             } else if let date = dateFormatter.date(from: dateString) {
                 return date
@@ -43,7 +42,7 @@ public enum JSONStat: Codable {
     public indirect enum ResponseClass: Codable {
         case dataset(Dataset)
         case dimension(JSONStat.Dimension)
-        case collection([String: Link])
+        case collection(Collection)
 
         public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: JSONStatV2.CodingKeys.self)
@@ -51,9 +50,20 @@ public enum JSONStat: Codable {
             switch responseClass {
             case "dataset": self = try .dataset(Dataset(from: decoder))
             case "dimension": self = try .dimension(JSONStat.Dimension(from: decoder))
-            // TODO: implement
-            case "collection": self = try .collection(["TODO": Link(from: decoder)])
+            case "collection": self = try .collection(Collection(from: decoder))
             default: throw JSONStat.DecodeError.unsupportedClass
+            }
+        }
+        
+        public struct Collection: Codable {
+            public var updated: Date?
+            public var href: URL?
+            public var links: [String: [Link]]?
+            
+            private enum CodingKeys: String, CodingKey {
+                case updated
+                case href
+                case links = "link"
             }
         }
 
@@ -96,6 +106,7 @@ public enum JSONStat: Codable {
         case nonJSONStat(type: String, href: URL)
         case jsonStat(class: String, href: URL, label: String)
         case dataset(JSONStat.ResponseClass.Dataset)
+        case collection(JSONStat.ResponseClass.Collection)
 
         public init(from decoder: Decoder) throws {
             do {
@@ -106,16 +117,19 @@ public enum JSONStat: Codable {
                     self = .nonJSONStat(type: type, href: href)
                     return
                 }
-                guard responseClass == "dataset" else {
-                    throw DecodingError.dataCorruptedError(forKey: .class, in: container, debugDescription: "Unknown class for link")
-                }
                 guard container.contains(.value) else {
                     let href = try container.decode(URL.self, forKey: .href)
                     let label = try container.decode(String.self, forKey: .label)
                     self = .jsonStat(class: responseClass, href: href, label: label)
                     return
                 }
-                self = try .dataset(.init(from: decoder))
+                if responseClass == "dataset" {
+                    self = try .dataset(.init(from: decoder))
+                } else if responseClass == "collection" {
+                    self = try .collection(.init(from: decoder))
+                } else {
+                    throw DecodingError.dataCorruptedError(forKey: .class, in: container, debugDescription: "Unknown class for link")
+                }
             } catch {
                 print(error)
                 throw error
@@ -132,6 +146,8 @@ public enum JSONStat: Codable {
                 try container.encode(responseClass, forKey: .class)
                 try container.encode(href, forKey: .href)
                 try container.encode(label, forKey: .label)
+            case .collection(let collection):
+                try collection.encode(to: encoder)
             case .dataset(let dataset):
                 try dataset.encode(to: encoder)
             }
@@ -312,22 +328,26 @@ public struct JSONStatV1: Codable {
 
 public struct JSONStatV2: Codable {
     var version: String
+    var label: String?
     var responseClass: JSONStat.ResponseClass?
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         version = try container.decode(String.self, forKey: .version)
+        label = try container.decodeIfPresent(String.self, forKey: .label)
         responseClass = try JSONStat.ResponseClass(from: decoder)
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(version, forKey: .version)
+        try container.encodeIfPresent(label, forKey: .label)
         try responseClass?.encode(to: encoder)
     }
 
     fileprivate enum CodingKeys: CodingKey {
         case version
+        case label
         case `class`
     }
 }
