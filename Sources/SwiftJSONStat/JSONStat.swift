@@ -6,7 +6,19 @@ public enum JSONStat: Codable {
 
     public static let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
+        let isoDateFormatter = ISO8601DateFormatter()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        decoder.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            if let date = isoDateFormatter.date(from: dateString) {
+                return date
+            } else if let date = dateFormatter.date(from: dateString) {
+                return date
+            }
+            throw DecodeError.unupportedUpdatedFormat(dateString: dateString)
+        }
         return decoder
     }()
 
@@ -23,6 +35,7 @@ public enum JSONStat: Codable {
     public enum DecodeError: Error {
         case unsupportedVersion
         case unsupportedClass
+        case unupportedUpdatedFormat(dateString: String)
         case unsupportedValues
         case unsupportedIndex
     }
@@ -129,15 +142,25 @@ public enum JSONStat: Codable {
     }
 
     public struct Dimension: Codable {
-        public var categories: [String: Category]
+        public var category: Dimension.Category
         public var label: String
         public var responseClass: ResponseClass?
         public var href: URL?
-        public var links: [String: Link]?
+        public var links: [String: [Link]]?
         public var notes: [String]?
 
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            category = try container.decode(Dimension.Category.self, forKey: .category)
+            label = try container.decode(String.self, forKey: .label)
+            responseClass = try container.decodeIfPresent(JSONStat.ResponseClass.self, forKey: .responseClass)
+            href = try container.decodeIfPresent(URL.self, forKey: .href)
+            links = try container.decodeIfPresent([String: [Link]].self, forKey: .links)
+            notes = try container.decodeIfPresent([String].self, forKey: .notes)
+        }
+
         private enum CodingKeys: String, CodingKey {
-            case categories = "category"
+            case category
             case label
             case responseClass = "class"
             case href
@@ -153,27 +176,23 @@ public enum JSONStat: Codable {
             public var units: [String: Unit]?
             public var notes: [String: [String]]?
 
+            public init(from decoder: Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                indices = try container.decodeIfPresent(Indices.self, forKey: .indices)
+                labels = try container.decodeIfPresent([String: String].self, forKey: .labels)
+                children = try container.decodeIfPresent([String: [String]].self, forKey: .children)
+                coordinates = try container.decodeIfPresent([String: [Double]].self, forKey: .coordinates)
+                units = try container.decodeIfPresent([String: Unit].self, forKey: .units)
+                notes = try container.decodeIfPresent([String: [String]].self, forKey: .notes)
+            }
+
             private enum CodingKeys: String, CodingKey {
                 case indices = "index"
                 case labels = "label"
                 case children = "child"
-            }
-
-            public struct Indices: Codable {
-                private var indices: [String: Int]
-
-                public init(from decoder: Decoder) throws {
-                    var container = try decoder.unkeyedContainer()
-                    if let valuesArray = try? container.decode([String].self) {
-                        indices = valuesArray.enumerated().reduce(into: [String: Int]()) { partialResult, item in
-                            partialResult[item.element] = item.offset
-                        }
-                    } else if let indicesDict = try? container.decode([String: Int].self) {
-                        indices = indicesDict
-                    } else {
-                        throw DecodeError.unsupportedIndex
-                    }
-                }
+                case coordinates
+                case units = "unit"
+                case notes = "note"
             }
 
             public struct Unit: Codable {
@@ -191,39 +210,38 @@ public enum JSONStat: Codable {
         }
     }
 
-    public struct DictionaryBasedValues<T>: Codable where T: Codable {
-        private var onlyNonNilValues: [String: T]
+    public enum DictionaryBasedValues<ArrayValue, DictValue>: Codable where ArrayValue: Codable, DictValue: Codable {
+        case array([ArrayValue?])
+        case dictionary([String: DictValue?])
 
         public init(from decoder: Decoder) throws {
-            if var container = try? decoder.unkeyedContainer() {
-                var onlyNonNilValues = [String: T]()
-                var index = 0
-                while container.isAtEnd == false {
-                    onlyNonNilValues["\(index)"] = try container.decode(T.self)
-                    index += 1
-                }
-                self.onlyNonNilValues = onlyNonNilValues
-            } else if let container = try? decoder.singleValueContainer(),
-                      let onlyNonNilValues = try? container.decode([String: T].self) {
-                self.onlyNonNilValues = onlyNonNilValues
+            guard let container = try? decoder.singleValueContainer() else {
+                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Values must be an array or dictionary"))
+            }
+            if let values = try? container.decode([ArrayValue?].self) {
+                self = .array(values)
+            } else if let dictionary = try? container.decode([String: DictValue?].self) {
+                self = .dictionary(dictionary)
             } else {
                 throw DecodeError.unsupportedValues
             }
         }
 
         public func encode(to encoder: Encoder) throws {
-            var container = encoder.unkeyedContainer()
-            try container.encode(onlyNonNilValues)
-        }
-
-        subscript(index: Int) -> T? {
-            get { onlyNonNilValues[String(index)] }
-            set { onlyNonNilValues[String(index)] = newValue }
+            switch self {
+            case .array(let values):
+                var container = encoder.unkeyedContainer()
+                try container.encode(contentsOf: values)
+            case .dictionary(let dictionary):
+                var container = encoder.singleValueContainer()
+                try container.encode(dictionary)
+            }
         }
     }
 
-    public typealias Values = DictionaryBasedValues<Double>
-    public typealias Status = DictionaryBasedValues<String>
+    public typealias Values = DictionaryBasedValues<Double, Double>
+    public typealias Indices = DictionaryBasedValues<String, Int>
+    public typealias Status = DictionaryBasedValues<String, String>
 }
 
 public struct JSONStatV1: Codable {
@@ -294,12 +312,13 @@ public struct JSONStatV2: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         version = try container.decode(String.self, forKey: .version)
-        responseClass = try container.decode(JSONStat.ResponseClass.self, forKey: .class)
+        responseClass = try JSONStat.ResponseClass(from: decoder)
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(version, forKey: .version)
+        try responseClass?.encode(to: encoder)
     }
 
     fileprivate enum CodingKeys: CodingKey {
