@@ -83,7 +83,7 @@ final class JSONStatTests: XCTestCase {
         XCTAssertEqual(dataset.dimensions.count, 3)
         guard case .strings(let stringValues) = dataset.values,
               case .array(let values) = stringValues else {
-            throw JSONStat.DecodeError.unsupportedValues
+            XCTFail(); return
         }
         XCTAssertEqual(values.count, 24)
     }
