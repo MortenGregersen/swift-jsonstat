@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Dimension: Codable {
+public struct Dimension: Decodable {
     public var category: Dimension.Category
     public var label: String
     public var responseClass: ResponseClass?
@@ -34,7 +34,7 @@ public struct Dimension: Codable {
         case notes = "note"
     }
 
-    public struct Category: Codable {
+    public struct Category: Decodable {
         public var indices: Indices?
         public var labels: [String: String]?
         public var children: [String: [String]]?
@@ -61,7 +61,7 @@ public struct Dimension: Codable {
             case notes = "note"
         }
 
-        public struct Unit: Codable {
+        public struct Unit: Decodable {
             // Closed properties
             public var decimals: Int?
             public var label: String?

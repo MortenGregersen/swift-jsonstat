@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum JSONStatV1: Codable {
+public enum JSONStatV1: Decodable {
     case singleDataset(Dataset)
     case multipleDatasets([String: Dataset])
 
@@ -21,21 +21,11 @@ public enum JSONStatV1: Codable {
         }
     }
 
-    public func encode(to encoder: any Encoder) throws {
-        switch self {
-        case .singleDataset(let dataset):
-            try dataset.encode(to: encoder)
-        case .multipleDatasets(let datasets):
-            var container = encoder.singleValueContainer()
-            try container.encode(datasets)
-        }
-    }
-
     enum CodingKeys: CodingKey {
         case value
     }
 
-    public struct Dataset: Codable {
+    public struct Dataset: Decodable {
         public var dimensionsInfo: DimensionsInfo
         public var values: Values
         public var status: Status?
@@ -52,7 +42,7 @@ public enum JSONStatV1: Codable {
             case notes = "note"
         }
 
-        public struct DimensionsInfo: Codable {
+        public struct DimensionsInfo: Decodable {
             public var id: [String]
             public var size: [Int]
             public var roles: Roles?
@@ -68,16 +58,6 @@ public enum JSONStatV1: Codable {
                     .reduce(into: [String: Dimension]()) { result, dimensionKey in
                         result[dimensionKey.stringValue] = try container.decode(Dimension.self, forKey: dimensionKey)
                     }
-            }
-
-            public func encode(to encoder: Encoder) throws {
-                var container = encoder.container(keyedBy: DynamicCodingKeys.self)
-                try container.encode(id, forKey: CodingKeys.id.dynamicKey)
-                try container.encode(size, forKey: CodingKeys.size.dynamicKey)
-                try container.encodeIfPresent(roles, forKey: CodingKeys.roles.dynamicKey)
-                try dimensions.forEach { key, dimension in
-                    try container.encode(dimension, forKey: .init(stringValue: key)!)
-                }
             }
 
             private enum CodingKeys: String, CodingKey, CaseIterable {

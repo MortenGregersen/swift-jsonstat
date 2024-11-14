@@ -5,7 +5,7 @@
 //  Created by Morten Bjerg Gregersen on 14/11/2024.
 //
 
-public struct Roles: Codable {
+public struct Roles: Decodable {
     var time: [String]?
     var geo: [String]?
     var metric: [String]?

@@ -5,7 +5,7 @@
 //  Created by Morten Bjerg Gregersen on 14/11/2024.
 //
 
-public enum DictionaryOrArrayItems<ArrayValue, DictValue>: Codable where ArrayValue: Codable, DictValue: Codable {
+public enum DictionaryOrArrayItems<ArrayValue, DictValue>: Decodable where ArrayValue: Decodable, DictValue: Decodable {
     case array([ArrayValue?])
     case dictionary([String: DictValue?])
 
@@ -21,20 +21,9 @@ public enum DictionaryOrArrayItems<ArrayValue, DictValue>: Codable where ArrayVa
             throw DecodeError.unsupportedValues
         }
     }
-
-    public func encode(to encoder: Encoder) throws {
-        switch self {
-        case .array(let values):
-            var container = encoder.unkeyedContainer()
-            try container.encode(contentsOf: values)
-        case .dictionary(let dictionary):
-            var container = encoder.singleValueContainer()
-            try container.encode(dictionary)
-        }
-    }
 }
 
-public enum Values: Codable {
+public enum Values: Decodable {
     case numbers(DictionaryOrArrayItems<Double, Double>)
     case strings(DictionaryOrArrayItems<String, String>)
 

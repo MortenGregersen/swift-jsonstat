@@ -7,7 +7,7 @@
 
 import Foundation
 
-public indirect enum ResponseClass: Codable {
+public indirect enum ResponseClass: Decodable {
     case dataset(Dataset)
     case dimension(Dimension)
     case collection(Collection)
@@ -23,7 +23,7 @@ public indirect enum ResponseClass: Codable {
         }
     }
         
-    public struct Collection: Codable {
+    public struct Collection: Decodable {
         public var updated: Date?
         public var href: URL?
         public var links: [String: [Link]]?
@@ -35,7 +35,7 @@ public indirect enum ResponseClass: Codable {
         }
     }
         
-    public struct Dataset: Codable {
+    public struct Dataset: Decodable {
         public var id: [String]
         public var size: [Int]
         public var roles: Roles?

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum JSONStat: Codable {
+public enum JSONStat: Decodable {
     case v1(JSONStatV1)
     case v2(JSONStatV2)
 
