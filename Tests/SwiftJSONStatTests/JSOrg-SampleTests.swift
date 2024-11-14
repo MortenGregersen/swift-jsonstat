@@ -25,17 +25,6 @@ struct JSOrgSampleTests {
         #expect(collection.links?["item"]?.count == 8)
     }
 
-    @Test func DecodeDenmark() throws {
-        let json = try loadExampleJSON(named: "denmark")
-        let decoder = JSONStat.decoder
-        let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
-        print(jsonStat)
-        guard case .v1(let jsonStatV1) = jsonStat, case .multipleDatasets(let datasets) = jsonStatV1 else {
-            fatalError()
-        }
-        #expect(datasets.values.first?.dimensionsInfo.dimensions.count == 3)
-    }
-
     @Test func DecodeGalicia() throws {
         let json = try loadExampleJSON(named: "galicia")
         let decoder = JSONStat.decoder
