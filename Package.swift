@@ -13,15 +13,15 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "SwiftJSONStat",
+            name: "JSONStatDecoder",
             targets: ["SwiftJSONStat"]),
     ],
     targets: [
         .target(
-            name: "SwiftJSONStat"),
+            name: "JSONStatDecoder"),
         .testTarget(
-            name: "SwiftJSONStatTests",
-            dependencies: ["SwiftJSONStat"],
+            name: "JSONStatDecoderTests",
+            dependencies: ["JSONStatDecoder"],
             resources: [.copy("DST-Samples"), .copy("Eurostat-Samples"), .copy("JSOrg-Samples")]),
     ]
 )
