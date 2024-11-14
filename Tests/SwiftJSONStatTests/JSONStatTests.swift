@@ -1,121 +1,122 @@
-@testable import SwiftJSONStat
-import XCTest
+import Foundation
+import SwiftJSONStat
+import Testing
 
-final class JSONStatTests: XCTestCase {
-    func testDecodeCanada() throws {
+struct JSONStatTests {
+    @Test func DecodeCanada() throws {
         let json = try loadExampleJSON(named: "canada")
         let decoder = JSONStat.decoder
         let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
         guard case .v2(let jsonStatV2) = jsonStat, case .dataset(let dataset) = jsonStatV2.responseClass else {
-            XCTFail(); return
+            fatalError()
         }
-        XCTAssertEqual(dataset.dimensions.count, 5)
+        #expect(dataset.dimensions.count == 5)
     }
 
-    func testDecodeCollection() throws {
+    @Test func DecodeCollection() throws {
         let json = try loadExampleJSON(named: "collection")
         let decoder = JSONStat.decoder
         let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
         guard case .v2(let jsonStatV2) = jsonStat, case .collection(let collection) = jsonStatV2.responseClass else {
-            XCTFail(); return
+            fatalError()
         }
-        XCTAssertEqual(collection.links?["item"]?.count, 8)
+        #expect(collection.links?["item"]?.count == 8)
     }
 
-    func testDecodeDenmark() throws {
+    @Test func DecodeDenmark() throws {
         let json = try loadExampleJSON(named: "denmark")
         let decoder = JSONStat.decoder
         let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
         print(jsonStat)
         guard case .v1(let jsonStatV1) = jsonStat, case .multipleDatasets(let datasets) = jsonStatV1 else {
-            XCTFail(); return
+            fatalError()
         }
-        XCTAssertEqual(datasets.values.first?.dimensionsInfo.dimensions.count, 3)
+        #expect(datasets.values.first?.dimensionsInfo.dimensions.count == 3)
     }
 
-    func testDecodeGalicia() throws {
+    @Test func DecodeGalicia() throws {
         let json = try loadExampleJSON(named: "galicia")
         let decoder = JSONStat.decoder
         let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
         guard case .v2(let jsonStatV2) = jsonStat, case .dataset(let dataset) = jsonStatV2.responseClass else {
-            XCTFail(); return
+            fatalError()
         }
-        XCTAssertEqual(dataset.dimensions.count, 6)
+        #expect(dataset.dimensions.count == 6)
     }
 
-    func testDecodeHierarchy() throws {
+    @Test func DecodeHierarchy() throws {
         let json = try loadExampleJSON(named: "hierarchy")
         let decoder = JSONStat.decoder
         let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
         guard case .v2(let jsonStatV2) = jsonStat, case .dataset(let dataset) = jsonStatV2.responseClass else {
-            XCTFail(); return
+            fatalError()
         }
-        XCTAssertEqual(dataset.dimensions.count, 1)
+        #expect(dataset.dimensions.count == 1)
     }
-    
-    func testDecodeOECD_Canada() throws {
+
+    @Test func DecodeOECD_Canada() throws {
         let json = try loadExampleJSON(named: "oecd-canada")
         let decoder = JSONStat.decoder
         let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
         guard case .v1(let jsonStatV1) = jsonStat, case .multipleDatasets(let datasets) = jsonStatV1 else {
-            XCTFail(); return
+            fatalError()
         }
-        XCTAssertEqual(datasets["oecd"]?.dimensionsInfo.dimensions.count, 3)
+        #expect(datasets["oecd"]?.dimensionsInfo.dimensions.count == 3)
     }
-    
-    func testDecodeOECD_Canada_COL() throws {
+
+    @Test func DecodeOECD_Canada_COL() throws {
         let json = try loadExampleJSON(named: "oecd-canada-col")
         let decoder = JSONStat.decoder
         let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
         guard case .v2(let jsonStatV2) = jsonStat, case .collection(let dataset) = jsonStatV2.responseClass else {
-            XCTFail(); return
+            fatalError()
         }
-        XCTAssertEqual(dataset.links?["item"]?.count, 2)
+        #expect(dataset.links?["item"]?.count == 2)
     }
 
-    func testDecodeOrder() throws {
+    @Test func DecodeOrder() throws {
         let json = try loadExampleJSON(named: "order")
         let decoder = JSONStat.decoder
         let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
         guard case .v2(let jsonStatV2) = jsonStat, case .dataset(let dataset) = jsonStatV2.responseClass else {
-            XCTFail(); return
+            fatalError()
         }
-        XCTAssertEqual(dataset.dimensions.count, 3)
+        #expect(dataset.dimensions.count == 3)
         guard case .strings(let stringValues) = dataset.values,
               case .array(let values) = stringValues else {
-            XCTFail(); return
+            fatalError()
         }
-        XCTAssertEqual(values.count, 24)
+        #expect(values.count == 24)
     }
-    
-    func testDecodeUS_GSP() throws {
+
+    @Test func DecodeUS_GSP() throws {
         let json = try loadExampleJSON(named: "us-gsp")
         let decoder = JSONStat.decoder
         let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
         guard case .v2(let jsonStatV2) = jsonStat, case .dataset(let dataset) = jsonStatV2.responseClass else {
-            XCTFail(); return
+            fatalError()
         }
-        XCTAssertEqual(dataset.dimensions.count, 3)
+        #expect(dataset.dimensions.count == 3)
     }
-    
-    func testDecodeUS_Labor() throws {
+
+    @Test func DecodeUS_Labor() throws {
         let json = try loadExampleJSON(named: "us-labor")
         let decoder = JSONStat.decoder
         let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
         guard case .v2(let jsonStatV2) = jsonStat, case .dataset(let dataset) = jsonStatV2.responseClass else {
-            XCTFail(); return
+            fatalError()
         }
-        XCTAssertEqual(dataset.dimensions.count, 3)
+        #expect(dataset.dimensions.count == 3)
     }
-    
-    func testDecodeUS_UNR() throws {
+
+    @Test func DecodeUS_UNR() throws {
         let json = try loadExampleJSON(named: "us-unr")
         let decoder = JSONStat.decoder
         let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
         guard case .v2(let jsonStatV2) = jsonStat, case .dataset(let dataset) = jsonStatV2.responseClass else {
-            XCTFail(); return
+            fatalError()
         }
-        XCTAssertEqual(dataset.dimensions.count, 3)
+        #expect(dataset.dimensions.count == 3)
     }
 
     private func loadExampleJSON(named fileName: String) throws -> String {

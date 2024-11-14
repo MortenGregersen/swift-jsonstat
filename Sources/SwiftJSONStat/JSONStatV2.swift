@@ -6,9 +6,9 @@
 //
 
 public struct JSONStatV2: Codable {
-    var version: String
-    var label: String?
-    var responseClass: ResponseClass?
+    public var version: String
+    public var label: String?
+    public var responseClass: ResponseClass?
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
