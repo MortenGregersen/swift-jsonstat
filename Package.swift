@@ -22,6 +22,6 @@ let package = Package(
         .testTarget(
             name: "SwiftJSONStatTests",
             dependencies: ["SwiftJSONStat"],
-            resources: [.copy("Examples")]),
+            resources: [.copy("DST-Samples"), .copy("Eurostat-Samples"), .copy("JSOrg-Samples")]),
     ]
 )

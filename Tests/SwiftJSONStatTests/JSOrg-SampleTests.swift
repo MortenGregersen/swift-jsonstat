@@ -2,7 +2,9 @@ import Foundation
 import SwiftJSONStat
 import Testing
 
-struct JSONStatTests {
+// Samples from https://json-stat.org/format/
+
+struct JSOrgSampleTests {
     @Test func DecodeCanada() throws {
         let json = try loadExampleJSON(named: "canada")
         let decoder = JSONStat.decoder
@@ -120,7 +122,7 @@ struct JSONStatTests {
     }
 
     private func loadExampleJSON(named fileName: String) throws -> String {
-        let filePath = Bundle.module.path(forResource: "Examples/\(fileName)", ofType: "json")!
+        let filePath = Bundle.module.path(forResource: "JSOrg-Samples/\(fileName)", ofType: "json")!
         return try String(contentsOf: URL(filePath: filePath))
     }
 }
