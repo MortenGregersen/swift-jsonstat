@@ -1,10 +1,10 @@
 import Foundation
-import SwiftJSONStat
+import JSONStatDecoder
 import Testing
 
 // Samples from https://api.statbank.dk/console#data
 
-struct DSTSampleTests {
+struct DKStatbankSamplesTests {
     @Test func DecodeHISB3() throws {
         let json = try loadExampleJSON(named: "HISB3")
         let decoder = JSONStat.decoder
@@ -21,7 +21,7 @@ struct DSTSampleTests {
     }
 
     private func loadExampleJSON(named fileName: String) throws -> String {
-        let filePath = Bundle.module.path(forResource: "DST-Samples/\(fileName)", ofType: "json")!
+        let filePath = Bundle.module.path(forResource: "DKStatbank/\(fileName)", ofType: "json")!
         return try String(contentsOf: URL(filePath: filePath))
     }
 }

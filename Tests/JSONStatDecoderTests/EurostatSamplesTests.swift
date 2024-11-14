@@ -1,10 +1,10 @@
 import Foundation
-import SwiftJSONStat
+import JSONStatDecoder
 import Testing
 
 // Samples from https://ec.europa.eu/eurostat/web/user-guides/data-browser/api-data-access/api-detailed-guidelines/api-statistics
 
-struct EurostatSampleTests {
+struct EurostatSamplesTests {
     @Test func DecodeNama10gdp() throws {
         let json = try loadExampleJSON(named: "nama_10_gdp")
         let decoder = JSONStat.decoder
@@ -26,7 +26,7 @@ struct EurostatSampleTests {
     }
 
     private func loadExampleJSON(named fileName: String) throws -> String {
-        let filePath = Bundle.module.path(forResource: "Eurostat-Samples/\(fileName)", ofType: "json")!
+        let filePath = Bundle.module.path(forResource: "Eurostat/\(fileName)", ofType: "json")!
         return try String(contentsOf: URL(filePath: filePath))
     }
 }

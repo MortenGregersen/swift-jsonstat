@@ -3,6 +3,12 @@
 
 import PackageDescription
 
+let testResources: [Resource] = [
+    .copy("../Samples/DKStatbank"),
+    .copy("../Samples/Eurostat"),
+    .copy("../Samples/JSONStatOrg")
+]
+
 let package = Package(
     name: "swift-jsonstat",
     platforms: [
@@ -14,14 +20,11 @@ let package = Package(
     products: [
         .library(
             name: "JSONStatDecoder",
-            targets: ["SwiftJSONStat"]),
+            targets: ["JSONStatDecoder"]),
     ],
     targets: [
-        .target(
-            name: "JSONStatDecoder"),
-        .testTarget(
-            name: "JSONStatDecoderTests",
-            dependencies: ["JSONStatDecoder"],
-            resources: [.copy("DST-Samples"), .copy("Eurostat-Samples"), .copy("JSOrg-Samples")]),
-    ]
-)
+        .target(name: "JSONStatDecoder"),
+        .testTarget(name: "JSONStatDecoderTests",
+                    dependencies: ["JSONStatDecoder"],
+                    resources: testResources),
+    ])
