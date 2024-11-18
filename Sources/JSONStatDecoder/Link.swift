@@ -7,10 +7,10 @@
 
 import Foundation
 
-public enum Link: Decodable {
+public enum Link: Decodable, Equatable {
     case nonJSONStat(type: String, href: URL)
     case jsonStat(class: String, href: URL, label: String)
-    case dataset(ResponseClass.Dataset)
+    case dataset(JSONStatV2.Dataset)
     case collection(ResponseClass.Collection)
 
     public init(from decoder: Decoder) throws {

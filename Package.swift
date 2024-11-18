@@ -21,10 +21,18 @@ let package = Package(
         .library(
             name: "JSONStatDecoder",
             targets: ["JSONStatDecoder"]),
+        .library(
+            name: "JSONStatConverter",
+            targets: ["JSONStatConverter"]),
     ],
     targets: [
         .target(name: "JSONStatDecoder"),
         .testTarget(name: "JSONStatDecoderTests",
                     dependencies: ["JSONStatDecoder"],
                     resources: testResources),
+        .target(name: "JSONStatConverter",
+                dependencies: ["JSONStatDecoder"]),
+        .testTarget(name: "JSONStatConverterTests",
+                    dependencies: ["JSONStatConverter"],
+                    resources: testResources)
     ])

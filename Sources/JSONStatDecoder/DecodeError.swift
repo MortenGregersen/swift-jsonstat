@@ -11,4 +11,5 @@ enum DecodeError: Error {
     case unupportedUpdatedFormat(dateString: String)
     case unsupportedValues
     case unsupportedIndex
+    case unsupportedStatus
 }

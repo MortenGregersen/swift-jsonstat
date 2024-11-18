@@ -5,7 +5,9 @@
 //  Created by Morten Bjerg Gregersen on 14/11/2024.
 //
 
-public enum DictionaryOrArrayItems<ArrayValue, DictValue>: Decodable where ArrayValue: Decodable, DictValue: Decodable {
+import Foundation
+
+public enum DictionaryOrArrayItems<ArrayValue, DictValue>: Decodable, Equatable where ArrayValue: Decodable & Equatable, DictValue: Decodable & Equatable {
     case array([ArrayValue?])
     case dictionary([String: DictValue?])
 
@@ -23,9 +25,24 @@ public enum DictionaryOrArrayItems<ArrayValue, DictValue>: Decodable where Array
     }
 }
 
-public enum Values: Decodable {
+public enum Values: Decodable, Equatable {
     case numbers(DictionaryOrArrayItems<Double, Double>)
     case strings(DictionaryOrArrayItems<String, String>)
+
+    public var count: Int {
+        switch self {
+        case .numbers(let dictionaryOrArrayItems):
+            switch dictionaryOrArrayItems {
+            case .array(let array): array.count
+            case .dictionary(let dictionary): dictionary.count
+            }
+        case .strings(let dictionaryOrArrayItems):
+            switch dictionaryOrArrayItems {
+            case .array(let array): array.count
+            case .dictionary(let dictionary): dictionary.count
+            }
+        }
+    }
 
     public init(from decoder: any Decoder) throws {
         if let numbers = try? DictionaryOrArrayItems<Double, Double>(from: decoder) {
@@ -39,4 +56,3 @@ public enum Values: Decodable {
 }
 
 public typealias Indices = DictionaryOrArrayItems<String, Int>
-public typealias Status = DictionaryOrArrayItems<String, String>

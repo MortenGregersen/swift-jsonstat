@@ -5,6 +5,8 @@
 //  Created by Morten Bjerg Gregersen on 14/11/2024.
 //
 
+import Foundation
+
 public struct JSONStatV2: Decodable {
     public var version: String
     public var label: String?
@@ -21,5 +23,33 @@ public struct JSONStatV2: Decodable {
         case version
         case label
         case `class`
+    }
+
+    public struct Dataset: Decodable, Equatable {
+        public var id: [String]
+        public var size: [Int]
+        public var roles: Roles?
+        public var values: Values
+        public var status: Status?
+        public var dimensions: [String: Dimension]
+        public var updated: Date?
+        public var source: String?
+        public var href: URL?
+        public var links: [String: [Link]]?
+        public var notes: [String]?
+
+        private enum CodingKeys: String, CodingKey {
+            case id
+            case size
+            case roles = "role"
+            case values = "value"
+            case status
+            case dimensions = "dimension"
+            case updated
+            case source
+            case href
+            case links = "link"
+            case notes = "note"
+        }
     }
 }

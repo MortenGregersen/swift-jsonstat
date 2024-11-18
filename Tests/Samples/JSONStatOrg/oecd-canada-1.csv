@@ -1,0 +1,121 @@
+country,year,age group,concepts,sex,status,value
+Canada,2012,total,population,total,a,34880.5
+Canada,2012,total,population,male,a,17309.1
+Canada,2012,total,population,female,a,17571.3
+Canada,2012,total,weight of age group in the population,total,a,100
+Canada,2012,total,weight of age group in the population,male,a,100
+Canada,2012,total,weight of age group in the population,female,a,100
+Canada,2012,0 to 4,population,total,a,1928.8
+Canada,2012,0 to 4,population,male,a,988.7
+Canada,2012,0 to 4,population,female,a,940.1
+Canada,2012,0 to 4,weight of age group in the population,total,a,5.5
+Canada,2012,0 to 4,weight of age group in the population,male,a,5.7
+Canada,2012,0 to 4,weight of age group in the population,female,a,5.3
+Canada,2012,5 to 9,population,total,a,1857.1
+Canada,2012,5 to 9,population,male,a,955
+Canada,2012,5 to 9,population,female,a,902.1
+Canada,2012,5 to 9,weight of age group in the population,total,a,5.3
+Canada,2012,5 to 9,weight of age group in the population,male,a,5.5
+Canada,2012,5 to 9,weight of age group in the population,female,a,5.1
+Canada,2012,10 to 14,population,total,a,1877.3
+Canada,2012,10 to 14,population,male,a,964.7
+Canada,2012,10 to 14,population,female,a,912.6
+Canada,2012,10 to 14,weight of age group in the population,total,a,5.4
+Canada,2012,10 to 14,weight of age group in the population,male,a,5.6
+Canada,2012,10 to 14,weight of age group in the population,female,a,5.2
+Canada,2012,15 to 19,population,total,a,2163
+Canada,2012,15 to 19,population,male,a,1108.2
+Canada,2012,15 to 19,population,female,a,1054.7
+Canada,2012,15 to 19,weight of age group in the population,total,a,6.2
+Canada,2012,15 to 19,weight of age group in the population,male,a,6.4
+Canada,2012,15 to 19,weight of age group in the population,female,a,6
+Canada,2012,20 to 24,population,total,a,2441.1
+Canada,2012,20 to 24,population,male,a,1254.2
+Canada,2012,20 to 24,population,female,a,1186.9
+Canada,2012,20 to 24,weight of age group in the population,total,a,7
+Canada,2012,20 to 24,weight of age group in the population,male,a,7.2
+Canada,2012,20 to 24,weight of age group in the population,female,a,6.8
+Canada,2012,25 to 29,population,total,a,2452.3
+Canada,2012,25 to 29,population,male,a,1246.8
+Canada,2012,25 to 29,population,female,a,1205.5
+Canada,2012,25 to 29,weight of age group in the population,total,a,7
+Canada,2012,25 to 29,weight of age group in the population,male,a,7.2
+Canada,2012,25 to 29,weight of age group in the population,female,a,6.9
+Canada,2012,30 to 34,population,total,a,2406.3
+Canada,2012,30 to 34,population,male,a,1203.5
+Canada,2012,30 to 34,population,female,a,1202.8
+Canada,2012,30 to 34,weight of age group in the population,total,a,6.9
+Canada,2012,30 to 34,weight of age group in the population,male,a,7
+Canada,2012,30 to 34,weight of age group in the population,female,a,6.8
+Canada,2012,35 to 39,population,total,a,2307.2
+Canada,2012,35 to 39,population,male,a,1155.2
+Canada,2012,35 to 39,population,female,a,1152
+Canada,2012,35 to 39,weight of age group in the population,total,a,6.6
+Canada,2012,35 to 39,weight of age group in the population,male,a,6.7
+Canada,2012,35 to 39,weight of age group in the population,female,a,6.6
+Canada,2012,40 to 44,population,total,a,2384.6
+Canada,2012,40 to 44,population,male,a,1199.4
+Canada,2012,40 to 44,population,female,a,1185.2
+Canada,2012,40 to 44,weight of age group in the population,total,a,6.8
+Canada,2012,40 to 44,weight of age group in the population,male,a,6.9
+Canada,2012,40 to 44,weight of age group in the population,female,a,6.7
+Canada,2012,45 to 49,population,total,a,2681.3
+Canada,2012,45 to 49,population,male,a,1350.1
+Canada,2012,45 to 49,population,female,a,1331.2
+Canada,2012,45 to 49,weight of age group in the population,total,a,7.7
+Canada,2012,45 to 49,weight of age group in the population,male,a,7.8
+Canada,2012,45 to 49,weight of age group in the population,female,a,7.6
+Canada,2012,50 to 54,population,total,a,2703.2
+Canada,2012,50 to 54,population,male,a,1352.3
+Canada,2012,50 to 54,population,female,a,1350.9
+Canada,2012,50 to 54,weight of age group in the population,total,a,7.7
+Canada,2012,50 to 54,weight of age group in the population,male,a,7.8
+Canada,2012,50 to 54,weight of age group in the population,female,a,7.7
+Canada,2012,55 to 59,population,total,a,2428.5
+Canada,2012,55 to 59,population,male,a,1199
+Canada,2012,55 to 59,population,female,a,1229.5
+Canada,2012,55 to 59,weight of age group in the population,total,a,7
+Canada,2012,55 to 59,weight of age group in the population,male,a,6.9
+Canada,2012,55 to 59,weight of age group in the population,female,a,7
+Canada,2012,60 to 64,population,total,a,2063
+Canada,2012,60 to 64,population,male,a,1010.2
+Canada,2012,60 to 64,population,female,a,1052.8
+Canada,2012,60 to 64,weight of age group in the population,total,a,5.9
+Canada,2012,60 to 64,weight of age group in the population,male,a,5.8
+Canada,2012,60 to 64,weight of age group in the population,female,a,6
+Canada,2012,65 to 69,population,total,a,1645.1
+Canada,2012,65 to 69,population,male,a,797.9
+Canada,2012,65 to 69,population,female,a,847.2
+Canada,2012,65 to 69,weight of age group in the population,total,a,4.7
+Canada,2012,65 to 69,weight of age group in the population,male,a,4.6
+Canada,2012,65 to 69,weight of age group in the population,female,a,4.8
+Canada,2012,70 to 74,population,total,a,1190.7
+Canada,2012,70 to 74,population,male,a,563.8
+Canada,2012,70 to 74,population,female,a,626.8
+Canada,2012,70 to 74,weight of age group in the population,total,a,3.4
+Canada,2012,70 to 74,weight of age group in the population,male,a,3.3
+Canada,2012,70 to 74,weight of age group in the population,female,a,3.6
+Canada,2012,75 to 79,population,total,a,924.1
+Canada,2012,75 to 79,population,male,a,418.9
+Canada,2012,75 to 79,population,female,a,505.2
+Canada,2012,75 to 79,weight of age group in the population,total,a,2.6
+Canada,2012,75 to 79,weight of age group in the population,male,a,2.4
+Canada,2012,75 to 79,weight of age group in the population,female,a,2.9
+Canada,2012,80 to 84,population,total,a,718.8
+Canada,2012,80 to 84,population,male,a,303.6
+Canada,2012,80 to 84,population,female,a,415.2
+Canada,2012,80 to 84,weight of age group in the population,total,a,2.1
+Canada,2012,80 to 84,weight of age group in the population,male,a,1.8
+Canada,2012,80 to 84,weight of age group in the population,female,a,2.4
+Canada,2012,85 to 89,population,total,a,451
+Canada,2012,85 to 89,population,male,a,164.1
+Canada,2012,85 to 89,population,female,a,286.9
+Canada,2012,85 to 89,weight of age group in the population,total,a,1.3
+Canada,2012,85 to 89,weight of age group in the population,male,a,0.9
+Canada,2012,85 to 89,weight of age group in the population,female,a,1.6
+Canada,2012,90 and older,population,total,a,257.1
+Canada,2012,90 and older,population,male,a,73.2
+Canada,2012,90 and older,population,female,a,183.9
+Canada,2012,90 and older,weight of age group in the population,total,a,0.7
+Canada,2012,90 and older,weight of age group in the population,male,a,0.4
+Canada,2012,90 and older,weight of age group in the population,female,a,1
