@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Dimension: Decodable, Equatable {
+public struct Dimension: Codable, Equatable {
     public var category: Dimension.Category
     public var label: String
     public var responseClass: ResponseClass?
@@ -24,6 +24,16 @@ public struct Dimension: Decodable, Equatable {
         links = try container.decodeIfPresent([String: [Link]].self, forKey: .links)
         notes = try container.decodeIfPresent([String].self, forKey: .notes)
     }
+    
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.category, forKey: .category)
+        try container.encode(self.label, forKey: .label)
+        try container.encodeIfPresent(self.responseClass, forKey: .responseClass)
+        try container.encodeIfPresent(self.href, forKey: .href)
+        try container.encodeIfPresent(self.links, forKey: .links)
+        try container.encodeIfPresent(self.notes, forKey: .notes)
+    }
 
     private enum CodingKeys: String, CodingKey {
         case category
@@ -34,7 +44,7 @@ public struct Dimension: Decodable, Equatable {
         case notes = "note"
     }
 
-    public struct Category: Decodable, Equatable {
+    public struct Category: Codable, Equatable {
         public var indices: Indices?
         public var labels: [String: String]?
         public var children: [String: [String]]?
@@ -61,7 +71,7 @@ public struct Dimension: Decodable, Equatable {
             case notes = "note"
         }
 
-        public struct Unit: Decodable, Equatable {
+        public struct Unit: Codable, Equatable {
             // Closed properties
             public var decimals: Int?
             public var label: String?

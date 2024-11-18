@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum JSONStat: Decodable {
+public enum JSONStat: Codable, Equatable {
     case v1(JSONStatV1)
     case v2(JSONStatV2)
 
@@ -27,6 +27,13 @@ public enum JSONStat: Decodable {
         }
         return decoder
     }()
+    
+    public static let encoder: JSONEncoder = {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
+        return encoder
+    }()
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: JSONStatV2.CodingKeys.self)
@@ -35,6 +42,16 @@ public enum JSONStat: Decodable {
             self = try .v2(JSONStatV2(from: decoder))
         } else {
             self = try .v1(JSONStatV1(from: decoder))
+        }
+    }
+    
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch self {
+        case .v1(let jsonStatV1):
+            try container.encode(jsonStatV1)
+        case .v2(let jsonStatV2):
+            try container.encode(jsonStatV2)
         }
     }
 }

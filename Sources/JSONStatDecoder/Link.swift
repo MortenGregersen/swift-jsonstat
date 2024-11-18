@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum Link: Decodable, Equatable {
+public enum Link: Codable, Equatable {
     case nonJSONStat(type: String, href: URL)
     case jsonStat(class: String, href: URL, label: String)
     case dataset(JSONStatV2.Dataset)
@@ -33,6 +33,25 @@ public enum Link: Decodable, Equatable {
             self = try .collection(.init(from: decoder))
         } else {
             throw DecodingError.dataCorruptedError(forKey: .class, in: container, debugDescription: "Unknown class for link")
+        }
+    }
+    
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .nonJSONStat(let type, let href):
+            try container.encode(type, forKey: .type)
+            try container.encode(href, forKey: .href)
+        case .jsonStat(let responseClass, let href, let label):
+            try container.encode(responseClass, forKey: .class)
+            try container.encode(href, forKey: .href)
+            try container.encode(label, forKey: .label)
+        case .dataset(let dataset):
+            try container.encode("dataset", forKey: .class)
+            try dataset.encode(to: encoder)
+        case .collection(let collection):
+            try container.encode("collection", forKey: .class)
+            try collection.encode(to: encoder)
         }
     }
 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum JSONStatV1: Decodable {
+public enum JSONStatV1: Codable, Equatable {
     case singleDataset(Dataset)
     case multipleDatasets([String: Dataset])
 
@@ -21,17 +21,31 @@ public enum JSONStatV1: Decodable {
         }
     }
 
-    enum CodingKeys: CodingKey {
-        case value
+    public func encode(to encoder: any Encoder) throws {
+        switch self {
+        case .singleDataset(let dataset):
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(dataset, forKey: .dataset)
+        case .multipleDatasets(let dictionary):
+            var container = encoder.singleValueContainer()
+            try container.encode(dictionary)
+        }
     }
 
-    public struct Dataset: Decodable {
+    enum CodingKeys: CodingKey {
+        case value
+        case dataset
+    }
+
+    public struct Dataset: Codable, Equatable {
         public var dimensionsInfo: DimensionsInfo
         public var values: Values
         public var status: Status?
         public var updated: Date?
         public var source: String?
+        public var label: String
         public var notes: [String]?
+        public var `extension`: JSON?
 
         private enum CodingKeys: String, CodingKey {
             case dimensionsInfo = "dimension"
@@ -39,10 +53,12 @@ public enum JSONStatV1: Decodable {
             case status
             case updated
             case source
+            case label
             case notes = "note"
+            case `extension`
         }
 
-        public struct DimensionsInfo: Decodable {
+        public struct DimensionsInfo: Codable, Equatable {
             public var id: [String]
             public var size: [Int]
             public var roles: Roles?
@@ -50,14 +66,24 @@ public enum JSONStatV1: Decodable {
 
             public init(from decoder: Decoder) throws {
                 let container = try decoder.container(keyedBy: DynamicCodingKeys.self)
-                id = try container.decode([String].self, forKey: CodingKeys.id.dynamicKey)
-                size = try container.decode([Int].self, forKey: CodingKeys.size.dynamicKey)
-                roles = try container.decodeIfPresent(Roles.self, forKey: CodingKeys.roles.dynamicKey)
-                dimensions = try container.allKeys
+                self.id = try container.decode([String].self, forKey: CodingKeys.id.dynamicKey)
+                self.size = try container.decode([Int].self, forKey: CodingKeys.size.dynamicKey)
+                self.roles = try container.decodeIfPresent(Roles.self, forKey: CodingKeys.roles.dynamicKey)
+                self.dimensions = try container.allKeys
                     .filter { key in !CodingKeys.allCases.map(\.dynamicKey).contains(where: { $0 == key }) }
                     .reduce(into: [String: Dimension]()) { result, dimensionKey in
                         result[dimensionKey.stringValue] = try container.decode(Dimension.self, forKey: dimensionKey)
                     }
+            }
+
+            public func encode(to encoder: any Encoder) throws {
+                var container = encoder.container(keyedBy: DynamicCodingKeys.self)
+                try container.encode(self.id, forKey: CodingKeys.id.dynamicKey)
+                try container.encode(self.size, forKey: CodingKeys.size.dynamicKey)
+                try container.encodeIfPresent(self.roles, forKey: CodingKeys.roles.dynamicKey)
+                try self.dimensions.forEach { key, value in
+                    try container.encode(value, forKey: .init(stringValue: key)!)
+                }
             }
 
             private enum CodingKeys: String, CodingKey, CaseIterable {

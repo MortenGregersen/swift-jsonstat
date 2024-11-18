@@ -5,7 +5,7 @@
 //  Created by Morten Bjerg Gregersen on 18/11/2024.
 //
 
-public enum Status: Decodable, Equatable {
+public enum Status: Codable, Equatable {
     case array([String?])
     case dictionary([String: String?])
     case string(String)
@@ -22,6 +22,18 @@ public enum Status: Decodable, Equatable {
             self = .string(string)
         } else {
             throw DecodeError.unsupportedStatus
+        }
+    }
+    
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch self {
+        case .array(let array):
+            try container.encode(array)
+        case .dictionary(let dictionary):
+            try container.encode(dictionary)
+        case .string(let string):
+            try container.encode(string)
         }
     }
 }

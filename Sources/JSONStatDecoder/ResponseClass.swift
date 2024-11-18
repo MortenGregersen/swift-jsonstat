@@ -7,7 +7,7 @@
 
 import Foundation
 
-public indirect enum ResponseClass: Decodable, Equatable {
+public indirect enum ResponseClass: Codable, Equatable {
     case dataset(JSONStatV2.Dataset)
     case dimension(Dimension)
     case collection(Collection)
@@ -22,8 +22,23 @@ public indirect enum ResponseClass: Decodable, Equatable {
         default: throw DecodeError.unsupportedClass
         }
     }
+
+    public func encode(to encoder: any Encoder) throws {
+        var keyedContainer = encoder.container(keyedBy: JSONStatV2.CodingKeys.self)
+        switch self {
+        case .dataset(let dataset):
+            try keyedContainer.encode("dataset", forKey: .class)
+            try dataset.encode(to: encoder)
+        case .dimension(let dimension):
+            try keyedContainer.encode("dimension", forKey: .class)
+            try dimension.encode(to: encoder)
+        case .collection(let collection):
+            try keyedContainer.encode("collection", forKey: .class)
+            try collection.encode(to: encoder)
+        }
+    }
         
-    public struct Collection: Decodable, Equatable {
+    public struct Collection: Codable, Equatable {
         public var updated: Date?
         public var href: URL?
         public var links: [String: [Link]]?

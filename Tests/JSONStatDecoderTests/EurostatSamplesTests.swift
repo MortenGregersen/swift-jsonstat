@@ -6,27 +6,10 @@ import Testing
 
 struct EurostatSamplesTests {
     @Test func DecodeNama10gdp() throws {
-        let json = try loadExampleJSON(named: "nama_10_gdp")
-        let decoder = JSONStat.decoder
-        let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
-        guard case .v2(let jsonStatV2) = jsonStat, case .dataset(let dataset) = jsonStatV2.responseClass else {
-            fatalError()
-        }
-        #expect(dataset.dimensions.count == 5)
+        try decodeAndEncodeSample(named: "Eurostat/nama_10_gdp")
     }
     
     @Test func DecodeDemoGind() throws {
-        let json = try loadExampleJSON(named: "demo_gind")
-        let decoder = JSONStat.decoder
-        let jsonStat = try decoder.decode(JSONStat.self, from: json.data(using: .utf8)!)
-        guard case .v2(let jsonStatV2) = jsonStat, case .dataset(let dataset) = jsonStatV2.responseClass else {
-            fatalError()
-        }
-        #expect(dataset.dimensions.count == 4)
-    }
-
-    private func loadExampleJSON(named fileName: String) throws -> String {
-        let filePath = Bundle.module.path(forResource: "Eurostat/\(fileName)", ofType: "json")!
-        return try String(contentsOf: URL(filePath: filePath))
+        try decodeAndEncodeSample(named: "Eurostat/demo_gind")
     }
 }

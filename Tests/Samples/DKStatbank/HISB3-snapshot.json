@@ -1,0 +1,76 @@
+{
+  "dataset" : {
+    "dimension" : {
+      "BEVÆGELSE" : {
+        "category" : {
+          "index" : {
+            "M+K" : 0
+          },
+          "label" : {
+            "M+K" : "Befolkning 1. januar (i 1000)"
+          }
+        },
+        "label" : "bevægelsesart"
+      },
+      "ContentsCode" : {
+        "category" : {
+          "index" : {
+            "HISB3" : 0
+          },
+          "label" : {
+            "HISB3" : "Nøgletal om befolkningen"
+          },
+          "unit" : {
+            "HISB3" : {
+              "base" : "Antal",
+              "decimals" : 0
+            }
+          }
+        },
+        "label" : "Indhold"
+      },
+      "Tid" : {
+        "category" : {
+          "index" : {
+            "2024" : 0
+          },
+          "label" : {
+            "2024" : "2024"
+          }
+        },
+        "label" : "tid"
+      },
+      "id" : [
+        "BEVÆGELSE",
+        "ContentsCode",
+        "Tid"
+      ],
+      "role" : {
+        "metric" : [
+          "ContentsCode"
+        ],
+        "time" : [
+          "Tid"
+        ]
+      },
+      "size" : [
+        1,
+        1,
+        1
+      ]
+    },
+    "extension" : {
+      "px" : {
+        "decimals" : 0,
+        "infofile" : "https://www.dst.dk/statistikdokumentation/4a12721d-a8b0-4bde-82d7-1d1c6f319de3",
+        "tableid" : "HISB3"
+      }
+    },
+    "label" : "Nøgletal om befolkningen efter bevægelsesart, Indhold og tid",
+    "source" : "Danmarks Statistik",
+    "updated" : "2024-02-12T07:00:00Z",
+    "value" : [
+      5961
+    ]
+  }
+}
