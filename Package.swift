@@ -19,19 +19,19 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "JSONStatDecoder",
-            targets: ["JSONStatDecoder"]),
+            name: "JSONStat",
+            targets: ["JSONStat"]),
         .library(
             name: "JSONStatConverter",
             targets: ["JSONStatConverter"]),
     ],
     targets: [
-        .target(name: "JSONStatDecoder"),
-        .testTarget(name: "JSONStatDecoderTests",
-                    dependencies: ["JSONStatDecoder"],
+        .target(name: "JSONStat"),
+        .testTarget(name: "JSONStatTests",
+                    dependencies: ["JSONStat"],
                     resources: testResources),
         .target(name: "JSONStatConverter",
-                dependencies: ["JSONStatDecoder"]),
+                dependencies: ["JSONStat"]),
         .testTarget(name: "JSONStatConverterTests",
                     dependencies: ["JSONStatConverter"],
                     resources: testResources)

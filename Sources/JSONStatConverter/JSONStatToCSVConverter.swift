@@ -6,7 +6,8 @@
 //
 
 import Foundation
-import JSONStatDecoder
+import JSONStat
+import struct JSONStat.Dimension
 
 public enum ConvertError: Error {
     case dimensionMismatch // The number of dimensions doesn't match the priority list
@@ -33,7 +34,7 @@ public class JSONStatToCSVConverter {
         return try convertToCSV(sortedDimensions: sortedDimensions, values: jsonStatDataset.values, status: jsonStatDataset.status)
     }
 
-    private func convertToCSV(sortedDimensions: [JSONStatDecoder.Dimension], values: Values, status: Status?) throws -> String {
+    private func convertToCSV(sortedDimensions: [Dimension], values: Values, status: Status?) throws -> String {
         var header = sortedDimensions.map(\.label).map(\.csvEscaped).joined(separator: ",")
         if status != nil {
             header += ",status"
@@ -96,7 +97,7 @@ public class JSONStatToCSVConverter {
         return lines.joined(separator: "\n")
     }
 
-    private func generateCombinations(dimensions: [JSONStatDecoder.Dimension], current: [String] = []) throws -> [[String]] {
+    private func generateCombinations(dimensions: [Dimension], current: [String] = []) throws -> [[String]] {
         guard let dimension = dimensions.first else { return [current] }
         var results = [[String]]()
         var remainingDimensions = dimensions
