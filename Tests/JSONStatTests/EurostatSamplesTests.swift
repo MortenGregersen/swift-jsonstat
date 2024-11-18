@@ -1,5 +1,3 @@
-import Foundation
-import JSONStatDecoder
 import Testing
 
 // Samples from https://ec.europa.eu/eurostat/web/user-guides/data-browser/api-data-access/api-detailed-guidelines/api-statistics

@@ -7,7 +7,7 @@
 
 import Foundation
 import JSONStatConverter
-import JSONStatDecoder
+import JSONStat
 import Testing
 
 func loadSampleFile(named fileName: String, fileExtension: FileExtension) throws -> String {

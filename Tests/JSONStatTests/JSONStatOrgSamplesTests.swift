@@ -1,5 +1,3 @@
-import Foundation
-import JSONStatDecoder
 import Testing
 
 // Samples from https://json-stat.org/format/

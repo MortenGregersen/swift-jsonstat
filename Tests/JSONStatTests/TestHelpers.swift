@@ -1,12 +1,12 @@
 //
-//  File.swift
+//  TestHelpers.swift
 //  swift-jsonstat
 //
 //  Created by Morten Bjerg Gregersen on 18/11/2024.
 //
 
 import Foundation
-import JSONStatDecoder
+import JSONStat
 import Testing
 
 func loadSampleFile(named fileName: String) throws -> String {
