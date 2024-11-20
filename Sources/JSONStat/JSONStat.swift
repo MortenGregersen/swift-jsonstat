@@ -23,7 +23,7 @@ public enum JSONStat: Codable, Equatable {
             } else if let date = dateFormatter.date(from: dateString) {
                 return date
             }
-            throw DecodeError.unupportedUpdatedFormat(dateString: dateString)
+            throw DecodeError.unsupportedUpdatedFormat(dateString: dateString)
         }
         return decoder
     }()

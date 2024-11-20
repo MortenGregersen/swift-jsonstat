@@ -5,10 +5,10 @@
 //  Created by Morten Bjerg Gregersen on 14/11/2024.
 //
 
-enum DecodeError: Error {
+public enum DecodeError: Error, Equatable {
     case unsupportedVersion
     case unsupportedClass
-    case unupportedUpdatedFormat(dateString: String)
+    case unsupportedUpdatedFormat(dateString: String)
     case unsupportedValues
     case unsupportedIndex
     case unsupportedStatus
