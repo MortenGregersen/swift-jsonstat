@@ -1,5 +1,5 @@
 //
-//  LoadSampleFile.swift
+//  TestHelpers.swift
 //  swift-jsonstat
 //
 //  Created by Morten Bjerg Gregersen on 15/11/2024.

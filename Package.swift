@@ -22,6 +22,9 @@ let package = Package(
             name: "JSONStat",
             targets: ["JSONStat"]),
         .library(
+            name: "JSONStatTable",
+            targets: ["JSONStatTable"]),
+        .library(
             name: "JSONStatConverter",
             targets: ["JSONStatConverter"]),
     ],
@@ -30,8 +33,13 @@ let package = Package(
         .testTarget(name: "JSONStatTests",
                     dependencies: ["JSONStat"],
                     resources: testResources),
-        .target(name: "JSONStatConverter",
+        .target(name: "JSONStatTable",
                 dependencies: ["JSONStat"]),
+        .testTarget(name: "JSONStatTableTests",
+                    dependencies: ["JSONStatTable"],
+                    resources: testResources),
+        .target(name: "JSONStatConverter",
+                dependencies: ["JSONStat", "JSONStatTable"]),
         .testTarget(name: "JSONStatConverterTests",
                     dependencies: ["JSONStatConverter"],
                     resources: testResources)
