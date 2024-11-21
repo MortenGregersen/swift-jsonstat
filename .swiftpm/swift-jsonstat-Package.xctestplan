@@ -1,0 +1,38 @@
+{
+  "configurations" : [
+    {
+      "id" : "70895F9E-229E-4D45-8CAA-93192FEB21E3",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "JSONStatConverterTests",
+        "name" : "JSONStatConverterTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "JSONStatTests",
+        "name" : "JSONStatTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "JSONStatTableTests",
+        "name" : "JSONStatTableTests"
+      }
+    }
+  ],
+  "version" : 1
+}

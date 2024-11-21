@@ -41,11 +41,13 @@ public indirect enum ResponseClass: Codable, Equatable {
     public struct Collection: Codable, Equatable {
         public var updated: Date?
         public var href: URL?
+        public var label: String?
         public var links: [String: [Link]]?
             
         private enum CodingKeys: String, CodingKey {
             case updated
             case href
+            case label
             case links = "link"
         }
     }

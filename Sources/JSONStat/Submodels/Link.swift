@@ -9,9 +9,9 @@ import Foundation
 
 public enum Link: Codable, Equatable {
     case nonJSONStat(type: String, href: URL)
-    case jsonStat(class: String, href: URL, label: String)
-    case dataset(JSONStatV2.Dataset)
-    case collection(ResponseClass.Collection)
+    case jsonStat(class: String, href: URL, label: String, extension: JSON?)
+    case dataset(JSONStatV2.Dataset, extension: JSON?)
+    case collection(ResponseClass.Collection, extension: JSON?)
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -21,18 +21,19 @@ public enum Link: Codable, Equatable {
             self = .nonJSONStat(type: type, href: href)
             return
         }
-        guard container.contains(.value) else {
-            let href = try container.decode(URL.self, forKey: .href)
-            let label = try container.decode(String.self, forKey: .label)
-            self = .jsonStat(class: responseClass, href: href, label: label)
-            return
-        }
+        let `extension` = try container.decodeIfPresent(JSON.self, forKey: .extension)
         if responseClass == "dataset" {
-            self = try .dataset(.init(from: decoder))
+            if container.contains(.value) {
+                self = try .dataset(.init(from: decoder), extension: `extension`)
+            } else {
+                let href = try container.decode(URL.self, forKey: .href)
+                let label = try container.decode(String.self, forKey: .label)
+                self = .jsonStat(class: responseClass, href: href, label: label, extension: `extension`)
+            }
         } else if responseClass == "collection" {
-            self = try .collection(.init(from: decoder))
+            self = try .collection(.init(from: decoder), extension: `extension`)
         } else {
-            throw DecodingError.dataCorruptedError(forKey: .class, in: container, debugDescription: "Unknown class for link")
+            throw DecodeError.unsupportedLink
         }
     }
     
@@ -42,15 +43,18 @@ public enum Link: Codable, Equatable {
         case .nonJSONStat(let type, let href):
             try container.encode(type, forKey: .type)
             try container.encode(href, forKey: .href)
-        case .jsonStat(let responseClass, let href, let label):
+        case .jsonStat(let responseClass, let href, let label, let `extension`):
             try container.encode(responseClass, forKey: .class)
             try container.encode(href, forKey: .href)
             try container.encode(label, forKey: .label)
-        case .dataset(let dataset):
+            try container.encodeIfPresent(`extension`, forKey: .extension)
+        case .dataset(let dataset, let `extension`):
             try container.encode("dataset", forKey: .class)
+            try container.encodeIfPresent(`extension`, forKey: .extension)
             try dataset.encode(to: encoder)
-        case .collection(let collection):
+        case .collection(let collection, let `extension`):
             try container.encode("collection", forKey: .class)
+            try container.encodeIfPresent(`extension`, forKey: .extension)
             try collection.encode(to: encoder)
         }
     }
@@ -61,5 +65,6 @@ public enum Link: Codable, Equatable {
         case href
         case label
         case value
+        case `extension`
     }
 }

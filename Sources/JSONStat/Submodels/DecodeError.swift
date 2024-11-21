@@ -12,4 +12,5 @@ public enum DecodeError: Error, Equatable {
     case unsupportedValues
     case unsupportedIndex
     case unsupportedStatus
+    case unsupportedLink
 }

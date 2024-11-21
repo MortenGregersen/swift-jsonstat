@@ -421,6 +421,11 @@
             }
           }
         },
+        "extension" : {
+          "definition" : {
+            "UNR" : "The OECD harmonised unemployment rate gives the number of unemployed persons as a percentage of the labour force (the total number of people employed plus unemployed)."
+          }
+        },
         "label" : "indicator"
       },
       "id" : [

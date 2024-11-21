@@ -7,29 +7,17 @@
 
 import Foundation
 
-public enum JSONStatV1: Codable, Equatable {
-    case singleDataset(Dataset)
-    case multipleDatasets([String: Dataset])
+public struct JSONStatV1: Codable, Equatable {
+    public let datasets: [String: Dataset]
 
     public init(from decoder: any Decoder) throws {
-        let container = try decoder.container(keyedBy: DynamicCodingKeys.self)
-        if container.contains(.init(stringValue: "value")!) {
-            self = try .singleDataset(Dataset(from: decoder))
-        } else {
-            let container = try decoder.singleValueContainer()
-            self = try .multipleDatasets(container.decode([String: Dataset].self))
-        }
+        let container = try decoder.singleValueContainer()
+        datasets = try container.decode([String: Dataset].self)
     }
 
     public func encode(to encoder: any Encoder) throws {
-        switch self {
-        case .singleDataset(let dataset):
-            var container = encoder.container(keyedBy: CodingKeys.self)
-            try container.encode(dataset, forKey: .dataset)
-        case .multipleDatasets(let dictionary):
-            var container = encoder.singleValueContainer()
-            try container.encode(dictionary)
-        }
+        var container = encoder.singleValueContainer()
+        try container.encode(self.datasets)
     }
 
     enum CodingKeys: CodingKey {

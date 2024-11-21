@@ -11,9 +11,7 @@ public enum Status: Codable, Equatable {
     case string(String)
 
     public init(from decoder: any Decoder) throws {
-        guard let container = try? decoder.singleValueContainer() else {
-            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Status must be an array, dictionary or string"))
-        }
+        let container = try decoder.singleValueContainer()
         if let values = try? container.decode([String?].self) {
             self = .array(values)
         } else if let dictionary = try? container.decode([String: String?].self) {

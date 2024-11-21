@@ -1,5 +1,5 @@
 //
-//  File 2.swift
+//  JSON.swift
 //  swift-jsonstat
 //
 //  Created by Morten Bjerg Gregersen on 18/11/2024.
@@ -32,16 +32,6 @@ public enum JSON: Codable, CustomStringConvertible, Equatable {
             return "\(bool)"
         case .null:
             return "null"
-        }
-    }
-
-    var isEmpty: Bool {
-        switch self {
-        case .string(let string): string.isEmpty
-        case .object(let object): object.isEmpty
-        case .array(let array): array.isEmpty
-        case .null: true
-        case .number, .bool: false
         }
     }
 
@@ -113,7 +103,7 @@ public enum JSON: Codable, CustomStringConvertible, Equatable {
         }
     }
 
-    var objectValue: [String: JSON]? {
+    public var objectValue: [String: JSON]? {
         switch self {
         case .object(let object):
             let mapped: [String: JSON] = Dictionary(uniqueKeysWithValues:
@@ -123,112 +113,57 @@ public enum JSON: Codable, CustomStringConvertible, Equatable {
         }
     }
 
-    var arrayValue: [JSON]? {
+    public var arrayValue: [JSON]? {
         switch self {
         case .array(let array): array
         default: nil
         }
     }
 
-    subscript(key: String) -> JSON? {
-        guard let jsonKey = Key(stringValue: key),
-              case .object(let object) = self,
-              let value = object[jsonKey]
-        else { return nil }
-        return value
-    }
-
-    var stringValue: String? {
+    public var stringValue: String? {
         switch self {
         case .string(let string): string
         default: nil
         }
     }
 
-    var doubleValue: Double? {
+    public var doubleValue: Double? {
         switch self {
         case .number(let number): number
         default: nil
         }
     }
 
-    var intValue: Int? {
+    public var intValue: Int? {
         switch self {
         case .number(let number): Int(number)
         default: nil
         }
     }
 
-    subscript(index: Int) -> JSON? {
+    public var boolValue: Bool? {
+        switch self {
+        case .bool(let bool): bool
+        default: nil
+        }
+    }
+    
+    public subscript(index: Int) -> JSON? {
         switch self {
         case .array(let array): array[index]
         default: nil
         }
     }
-
-    var boolValue: Bool? {
-        switch self {
-        case .bool(let bool): bool
-        default: nil
-        }
+    
+    public subscript(key: String) -> JSON? {
+        guard let jsonKey = Key(stringValue: key),
+              case .object(let object) = self,
+              let value = object[jsonKey]
+        else { return nil }
+        return value
     }
-
-    var anyValue: Any? {
-        switch self {
-        case .string(let string): string
-        case .number(let number):
-            if let int = Int(exactly: number) { int }
-            else { number }
-        case .bool(let bool): bool
-        case .object(let object):
-            Dictionary(uniqueKeysWithValues:
-                object.compactMap { key, value -> (String, Any)? in
-                    if let nonNilValue = value.anyValue {
-                        return (key.stringValue, nonNilValue)
-                    }
-                    else { return nil }
-                })
-        case .array(let array):
-            array.compactMap(\.anyValue)
-        case .null:
-            nil
-        }
-    }
-
-    var dictionaryValue: [String: Any]? {
-        anyValue as? [String: Any]
-    }
-
-    subscript(dynamicMember member: String) -> JSON {
+    
+    public subscript(dynamicMember member: String) -> JSON {
         self[member] ?? .null
-    }
-}
-
-extension JSON {
-    init(_ value: Any) throws {
-        if let string = value as? String { self = .string(string) }
-        else if let number = value as? NSNumber { self = .number(number.doubleValue) }
-        else if let object = value as? [String: Any] {
-            var result: [Key: JSON] = [:]
-            for (key, subvalue) in object {
-                result[Key(key)] = try JSON(subvalue)
-            }
-            self = .object(result)
-        }
-        else if let array = value as? [Any] {
-            self = try .array(array.map(JSON.init))
-        }
-        else if let bool = value as? Bool { self = .bool(bool) }
-        else {
-            throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: [],
-                                                                          debugDescription: "Cannot encode value"))
-        }
-    }
-}
-
-extension JSONEncoder {
-    func stringEncode(_ value: some Encodable) throws -> String {
-        // JSONEncoder promises to always return UTF-8
-        try String(data: encode(value), encoding: .utf8)!
     }
 }

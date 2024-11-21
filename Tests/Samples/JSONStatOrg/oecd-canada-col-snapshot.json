@@ -150,6 +150,11 @@
                 }
               }
             },
+            "extension" : {
+              "definition" : {
+                "UNR" : "The OECD harmonised unemployment rate gives the number of unemployed persons as a percentage of the labour force (the total number of people employed plus unemployed)."
+              }
+            },
             "label" : "indicator"
           },
           "year" : {
@@ -171,6 +176,27 @@
             },
             "label" : "2003-2014"
           }
+        },
+        "extension" : {
+          "contact" : "EcoOutlook@oecd.org",
+          "metadata" : [
+            {
+              "href" : "http://www.oecd.org/eco/economicoutlookanalysisandforecasts/EO92macroeconomicsituation.pdf",
+              "title" : "Economic Outlook Policy and other assumptions underlying the projections Box 1.2 in General assessment"
+            },
+            {
+              "href" : "http://www.oecd.org/document/22/0,3343,en_2649_34109_33702486_1_1_1_1,00.html",
+              "title" : "Economic Outlook Sources and Methods"
+            },
+            {
+              "href" : "http://www.oecd.org/eco/databaseinventory",
+              "title" : "Database inventory (forthcoming)"
+            },
+            {
+              "href" : "http://stats.oecd.org/glossary/",
+              "title" : "OECD Glossary"
+            }
+          ]
         },
         "href" : "https://json-stat.org/samples/oecd.json",
         "id" : [

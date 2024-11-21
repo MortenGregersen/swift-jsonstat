@@ -10,29 +10,29 @@ import Foundation
 public struct Dimension: Codable, Equatable {
     public var category: Dimension.Category
     public var label: String
-    public var responseClass: ResponseClass?
     public var href: URL?
     public var links: [String: [Link]]?
     public var notes: [String]?
+    public var `extension`: JSON?
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        category = try container.decode(Dimension.Category.self, forKey: .category)
-        label = try container.decode(String.self, forKey: .label)
-        responseClass = try container.decodeIfPresent(ResponseClass.self, forKey: .responseClass)
-        href = try container.decodeIfPresent(URL.self, forKey: .href)
-        links = try container.decodeIfPresent([String: [Link]].self, forKey: .links)
-        notes = try container.decodeIfPresent([String].self, forKey: .notes)
+        self.category = try container.decode(Dimension.Category.self, forKey: .category)
+        self.label = try container.decode(String.self, forKey: .label)
+        self.href = try container.decodeIfPresent(URL.self, forKey: .href)
+        self.links = try container.decodeIfPresent([String: [Link]].self, forKey: .links)
+        self.notes = try container.decodeIfPresent([String].self, forKey: .notes)
+        self.extension = try container.decodeIfPresent(JSON.self, forKey: .extension)
     }
-    
+
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(self.category, forKey: .category)
         try container.encode(self.label, forKey: .label)
-        try container.encodeIfPresent(self.responseClass, forKey: .responseClass)
         try container.encodeIfPresent(self.href, forKey: .href)
         try container.encodeIfPresent(self.links, forKey: .links)
         try container.encodeIfPresent(self.notes, forKey: .notes)
+        try container.encodeIfPresent(self.extension, forKey: .extension)
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -42,6 +42,7 @@ public struct Dimension: Codable, Equatable {
         case href
         case links = "link"
         case notes = "note"
+        case `extension`
     }
 
     public struct Category: Codable, Equatable {
@@ -54,12 +55,12 @@ public struct Dimension: Codable, Equatable {
 
         public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            indices = try container.decodeIfPresent(Indices.self, forKey: .indices)
-            labels = try container.decodeIfPresent([String: String].self, forKey: .labels)
-            children = try container.decodeIfPresent([String: [String]].self, forKey: .children)
-            coordinates = try container.decodeIfPresent([String: [Double]].self, forKey: .coordinates)
-            units = try container.decodeIfPresent([String: Unit].self, forKey: .units)
-            notes = try container.decodeIfPresent([String: [String]].self, forKey: .notes)
+            self.indices = try container.decodeIfPresent(Indices.self, forKey: .indices)
+            self.labels = try container.decodeIfPresent([String: String].self, forKey: .labels)
+            self.children = try container.decodeIfPresent([String: [String]].self, forKey: .children)
+            self.coordinates = try container.decodeIfPresent([String: [Double]].self, forKey: .coordinates)
+            self.units = try container.decodeIfPresent([String: Unit].self, forKey: .units)
+            self.notes = try container.decodeIfPresent([String: [String]].self, forKey: .notes)
         }
 
         private enum CodingKeys: String, CodingKey {

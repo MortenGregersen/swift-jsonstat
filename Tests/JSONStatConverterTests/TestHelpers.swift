@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import JSONStatConverter
 import JSONStat
+import JSONStatConverter
 import Testing
 
 func loadSampleFile(named fileName: String, fileExtension: FileExtension) throws -> String {
@@ -33,16 +33,11 @@ func convertToCSVAndCompareToSnapshot(named fileName: String) throws {
 }
 
 func convertToCSVAndCompareToSnapshot(jsonStatV1: JSONStatV1, fileName: String) throws {
-    switch jsonStatV1 {
-    case .singleDataset(let dataset):
+    if jsonStatV1.datasets.count == 1, let dataset = jsonStatV1.datasets.values.first {
         try convertToCSVAndCompareToSnapshot(dataset: dataset, csvFileName: fileName)
-    case .multipleDatasets(let datasets):
-        if datasets.count == 1, let dataset = datasets.values.first {
-            try convertToCSVAndCompareToSnapshot(dataset: dataset, csvFileName: fileName)
-        } else {
-            for (index, dataset) in datasets.sorted(using: KeyPathComparator(\.key)).map(\.value).enumerated() {
-                try convertToCSVAndCompareToSnapshot(dataset: dataset, csvFileName: fileName + "-\(index + 1)")
-            }
+    } else {
+        for (index, dataset) in jsonStatV1.datasets.sorted(using: KeyPathComparator(\.key)).map(\.value).enumerated() {
+            try convertToCSVAndCompareToSnapshot(dataset: dataset, csvFileName: fileName + "-\(index + 1)")
         }
     }
 }
@@ -59,7 +54,7 @@ func convertToCSVAndCompareToSnapshot(jsonStatV2: JSONStatV2, fileName: String) 
     case .collection(let collection):
         try collection.links?.forEach { (_: String, value: [Link]) in
             for (index, link) in value.enumerated() {
-                guard case .dataset(let dataset) = link else {
+                guard case .dataset(let dataset, _) = link else {
                     fatalError()
                 }
                 try convertToCSVAndCompareToSnapshot(dataset: dataset, csvFileName: fileName + "-\(index + 1)")
