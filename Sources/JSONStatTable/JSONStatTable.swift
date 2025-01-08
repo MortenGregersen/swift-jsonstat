@@ -28,7 +28,10 @@ public struct JSONStatTable {
     }
 
     private init(dimensions: [String: Dimension], ids: [String], values: Values, status: Status?) throws {
-        let sortedDimensions = ids.compactMap { dimensions[$0] }
+        let sortedDimensions = ids.compactMap { (id: String) -> (String, Dimension)? in
+            guard let dimension = dimensions[id] else { return nil }
+            return (dimensionId: id, dimension: dimension)
+        }
         guard sortedDimensions.count == ids.count else {
             throw JSONStatTableError.dimensionMismatch
         }
@@ -40,7 +43,7 @@ public struct JSONStatTable {
         rows = try Self.createRows(from: sortedDimensions, values: values, status: status)
     }
 
-    private static func createRows(from sortedDimensions: [Dimension], values: Values, status: Status?) throws -> [Row] {
+    private static func createRows(from sortedDimensions: [(String, Dimension)], values: Values, status: Status?) throws -> [Row] {
         var rows = [Row]()
         let combinations = try generateCombinations(dimensions: sortedDimensions)
 
@@ -75,7 +78,7 @@ public struct JSONStatTable {
 
         for (index, combination) in combinations.enumerated() {
             let value = stringValues.first(where: { $0.key == "\(index)" })?.value ?? ""
-            var statusString: String? = nil
+            var statusString: String?
             if let status {
                 statusString = switch status {
                 case .array(let status):
@@ -93,19 +96,19 @@ public struct JSONStatTable {
                 }
             }
             let dimensionIdLabels = combination.reduce(into: [:]) { partialResult, indexAndLabel in
-                partialResult[indexAndLabel.index] = indexAndLabel.label
+                partialResult[indexAndLabel.dimensionId] = indexAndLabel.label
             }
             try rows.append(Row(value: value, cellByColumnId: dimensionIdLabels, cellByIndex: combination.map(\.label), status: statusString))
         }
         return rows
     }
 
-    private static func generateCombinations(dimensions: [Dimension], current: [(String, String)] = []) throws -> [[(index: String, label: String)]] {
-        guard let dimension = dimensions.first else { return [current] }
-        var results = [[(index: String, label: String)]]()
+    private static func generateCombinations(dimensions: [(dimensionId: String, dimension: Dimension)], current: [(String, String, String)] = []) throws -> [[(dimensionId: String, index: String, label: String)]] {
+        guard let (dimensionId, dimension) = dimensions.first else { return [current] }
+        var results = [[(dimensionId: String, index: String, label: String)]]()
         var remainingDimensions = dimensions
-        remainingDimensions.removeAll(where: { $0 == dimension })
-        let categoryIndexLabels: [(index: String, label: String)]
+        remainingDimensions.removeAll(where: { $0.dimensionId == dimensionId })
+        let categoryIndexLabels: [(dimensionId: String, index: String, label: String)]
         if let indices = dimension.category.indices {
             switch indices {
             case .dictionary(let indicesDict):
@@ -114,7 +117,7 @@ public struct JSONStatTable {
                     .map(\.key)
                 categoryIndexLabels = sortedLabelIds.compactMap {
                     let label = dimension.category.labels?[$0] ?? $0
-                    return ($0, label)
+                    return (dimensionId, $0, label)
                 }
                 guard categoryIndexLabels.count == sortedLabelIds.count else {
                     throw JSONStatTableError.missingLabel
@@ -122,16 +125,16 @@ public struct JSONStatTable {
             case .array(let indicesArray):
                 categoryIndexLabels = indicesArray.compactMap { $0 }.compactMap {
                     let label = dimension.category.labels?[$0] ?? $0
-                    return ($0, label)
+                    return (dimensionId, $0, label)
                 }
                 guard categoryIndexLabels.count == indicesArray.count else {
                     throw JSONStatTableError.missingLabel
                 }
             }
         } else if let labels = dimension.category.labels {
-            categoryIndexLabels = labels.map { ($0.key, $0.value) }
+            categoryIndexLabels = labels.map { (dimensionId, $0.key, $0.value) }
         } else {
-            categoryIndexLabels = [(dimension.label, dimension.label)]
+            categoryIndexLabels = [(dimensionId, dimension.label, dimension.label)]
         }
         for indexAndLabel in categoryIndexLabels {
             var newCurrent = current
