@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Dimension: Codable, Equatable {
+public struct Dimension: Codable, Equatable, Sendable {
     public var category: Dimension.Category
     public var label: String
     public var href: URL?
@@ -45,7 +45,7 @@ public struct Dimension: Codable, Equatable {
         case `extension`
     }
 
-    public struct Category: Codable, Equatable {
+    public struct Category: Codable, Equatable, Sendable {
         public var indices: Indices?
         public var labels: [String: String]?
         public var children: [String: [String]]?
@@ -72,7 +72,7 @@ public struct Dimension: Codable, Equatable {
             case notes = "note"
         }
 
-        public struct Unit: Codable, Equatable {
+        public struct Unit: Codable, Equatable, Sendable {
             // Closed properties
             public var decimals: Int?
             public var label: String?

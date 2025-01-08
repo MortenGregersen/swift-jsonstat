@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum Link: Codable, Equatable {
+public enum Link: Codable, Equatable, Sendable {
     case nonJSONStat(type: String, href: URL)
     case jsonStat(class: String, href: URL, label: String, extension: JSON?)
     case dataset(JSONStatV2.Dataset, extension: JSON?)

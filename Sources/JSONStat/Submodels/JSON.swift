@@ -10,7 +10,7 @@ import Foundation
 // Borrowed from: https://gist.github.com/rnapier/d91175be2f737aca7ad476759948666e
 
 @dynamicMemberLookup
-public enum JSON: Codable, CustomStringConvertible, Equatable {
+public enum JSON: Codable, CustomStringConvertible, Equatable, Sendable {
     public var description: String {
         switch self {
         case .string(let string): return "\"\(string)\""

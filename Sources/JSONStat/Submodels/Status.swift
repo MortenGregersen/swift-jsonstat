@@ -5,7 +5,7 @@
 //  Created by Morten Bjerg Gregersen on 18/11/2024.
 //
 
-public enum Status: Codable, Equatable {
+public enum Status: Codable, Equatable, Sendable {
     case array([String?])
     case dictionary([String: String?])
     case string(String)

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct JSONStatV2: Codable, Equatable {
+public struct JSONStatV2: Codable, Equatable, Sendable {
     public var version: String
     public var label: String?
     public var responseClass: ResponseClass
@@ -32,7 +32,7 @@ public struct JSONStatV2: Codable, Equatable {
         case `class`
     }
 
-    public struct Dataset: Codable, Equatable {
+    public struct Dataset: Codable, Equatable, Sendable {
         public var id: [String]
         public var size: [Int]
         public var roles: Roles?

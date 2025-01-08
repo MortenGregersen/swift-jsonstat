@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct JSONStatV1: Codable, Equatable {
+public struct JSONStatV1: Codable, Equatable, Sendable {
     public let datasets: [String: Dataset]
 
     public init(from decoder: any Decoder) throws {
@@ -25,7 +25,7 @@ public struct JSONStatV1: Codable, Equatable {
         case dataset
     }
 
-    public struct Dataset: Codable, Equatable {
+    public struct Dataset: Codable, Equatable, Sendable {
         public var dimensionsInfo: DimensionsInfo
         public var values: Values
         public var status: Status?
@@ -46,7 +46,7 @@ public struct JSONStatV1: Codable, Equatable {
             case `extension`
         }
 
-        public struct DimensionsInfo: Codable, Equatable {
+        public struct DimensionsInfo: Codable, Equatable, Sendable {
             public var id: [String]
             public var size: [Int]
             public var roles: Roles?

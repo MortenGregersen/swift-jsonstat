@@ -7,7 +7,7 @@
 
 import Foundation
 
-public indirect enum ResponseClass: Codable, Equatable {
+public indirect enum ResponseClass: Codable, Equatable, Sendable {
     case dataset(JSONStatV2.Dataset)
     case dimension(Dimension)
     case collection(Collection)
@@ -38,7 +38,7 @@ public indirect enum ResponseClass: Codable, Equatable {
         }
     }
         
-    public struct Collection: Codable, Equatable {
+    public struct Collection: Codable, Equatable, Sendable {
         public var updated: Date?
         public var href: URL?
         public var label: String?

@@ -7,7 +7,8 @@
 
 import Foundation
 
-public enum DictionaryOrArrayItems<ArrayValue, DictValue>: Codable, Equatable where ArrayValue: Codable & Equatable, DictValue: Codable & Equatable {
+public enum DictionaryOrArrayItems<ArrayValue, DictValue>: Codable, Equatable, Sendable
+    where ArrayValue: Codable & Equatable & Sendable, DictValue: Codable & Equatable & Sendable {
     case array([ArrayValue?])
     case dictionary([String: DictValue?])
 
@@ -33,7 +34,7 @@ public enum DictionaryOrArrayItems<ArrayValue, DictValue>: Codable, Equatable wh
     }
 }
 
-public enum Values: Codable, Equatable {
+public enum Values: Codable, Equatable, Sendable {
     case numbers(DictionaryOrArrayItems<Double, Double>)
     case strings(DictionaryOrArrayItems<String, String>)
 
@@ -46,7 +47,7 @@ public enum Values: Codable, Equatable {
             throw DecodeError.unsupportedValues
         }
     }
-    
+
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         switch self {
