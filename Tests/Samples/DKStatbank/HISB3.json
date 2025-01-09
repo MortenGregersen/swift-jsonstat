@@ -5,10 +5,14 @@
             "label": "bevægelsesart",
             "category": {
                "index": {
-                  "M+K": 0
+                  "M+K": 0,
+                  "M": 1,
+                  "K": 2
                },
                "label": {
-                  "M+K": "Befolkning 1. januar (i 1000)"
+                  "M+K": "Befolkning 1. januar (i 1000)",
+                  "M": "Mænd 1. januar (i 1000)",
+                  "K": "Kvinder 1. januar (i 1000)"
                }
             }
          },
@@ -33,10 +37,12 @@
             "label": "tid",
             "category": {
                "index": {
-                  "2024": 0
+                  "2022": 0,
+                  "2023": 1
                },
                "label": {
-                  "2024": "2024"
+                  "2022": "2022",
+                  "2023": "2023"
                }
             }
          },
@@ -46,9 +52,9 @@
             "Tid"
          ],
          "size": [
+            3,
             1,
-            1,
-            1
+            2
          ],
          "role": {
             "metric": [
@@ -63,7 +69,12 @@
       "source": "Danmarks Statistik",
       "updated": "2024-02-12T07:00:00Z",
       "value": [
-         5961
+         5873,
+         5933,
+         2923,
+         2949,
+         2951,
+         2984
       ],
       "extension": {
          "px": {

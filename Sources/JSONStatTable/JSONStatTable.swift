@@ -27,6 +27,14 @@ public struct JSONStatTable {
         try self.init(dimensions: dataset.dimensions, ids: dataset.id, values: dataset.values, status: dataset.status)
     }
 
+    public func getRow(withQuery query: [String: String]) -> Row? {
+        rows.first { row in
+            query.allSatisfy { key, value in
+                row[key]?.id == value
+            }
+        }
+    }
+    
     private init(dimensions: [String: Dimension], ids: [String], values: Values, status: Status?) throws {
         let sortedDimensions = ids.compactMap { (id: String) -> (String, Dimension)? in
             guard let dimension = dimensions[id] else { return nil }
@@ -95,10 +103,11 @@ public struct JSONStatTable {
                     status
                 }
             }
-            let dimensionIdLabels = combination.reduce(into: [:]) { partialResult, indexAndLabel in
-                partialResult[indexAndLabel.dimensionId] = indexAndLabel.label
+            let cellByColumnId = combination.reduce(into: [:]) { partialResult, indexAndLabel in
+                partialResult[indexAndLabel.dimensionId] = (id: indexAndLabel.index, label: indexAndLabel.label)
             }
-            try rows.append(Row(value: value, cellByColumnId: dimensionIdLabels, cellByIndex: combination.map(\.label), status: statusString))
+            let cellByIndex = combination.map { (id: $0.index, label: $0.label) }
+            try rows.append(.init(value: value, cellByColumnId: cellByColumnId, cellByIndex: cellByIndex, status: statusString))
         }
         return rows
     }
@@ -175,31 +184,35 @@ public struct JSONStatTable {
     }
 
     public struct Row: Sequence {
-        private let cellByColumnId: [String: String]
-        private let cellByIndex: [String]
+        public let value: String
+        private let cellByColumnId: [String: (id: String, label: String)]
+        private let cellByIndex: [(id: String, label: String)]
 
-        init(value: String, cellByColumnId: [String: String], cellByIndex: [String], status: String? = nil) throws {
+        init(value: String, cellByColumnId: [String: (id: String, label: String)], cellByIndex: [(id: String, label: String)], status: String? = nil) throws {
             var cellByColumnId = cellByColumnId
             var cellByIndex = cellByIndex
             if let status {
+                let status = (id: "status", label: status)
                 try cellByColumnId.merge(["status": status], uniquingKeysWith: { _, _ in throw JSONStatTableError.usingReservedColumnId })
                 cellByIndex.append(status)
             }
+            self.value = value
+            let value = (id: "value", label: value)
             try cellByColumnId.merge(["value": value], uniquingKeysWith: { _, _ in throw JSONStatTableError.usingReservedColumnId })
             cellByIndex.append(value)
             self.cellByColumnId = cellByColumnId
             self.cellByIndex = cellByIndex
         }
 
-        public subscript(key: String) -> String? {
+        public subscript(key: String) -> (id: String, label: String)? {
             cellByColumnId[key]
         }
 
-        public subscript(index: Int) -> String? {
+        public subscript(index: Int) -> (id: String, label: String)? {
             cellByIndex[index]
         }
 
-        public func makeIterator() -> IndexingIterator<[String]> {
+        public func makeIterator() -> IndexingIterator<[(id: String, label: String)]> {
             cellByIndex.makeIterator()
         }
     }

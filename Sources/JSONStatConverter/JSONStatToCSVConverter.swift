@@ -24,7 +24,7 @@ public class JSONStatToCSVConverter {
     private func convertToCSV(table: JSONStatTable) throws -> String {
         let header = table.header.map(\.csvEscaped).joined(separator: ",")
         let rows: [String] = table.rows.map { (row: JSONStatTable.Row) -> String in
-            row.map(\.csvEscaped).joined(separator: ",")
+            row.map(\.label.csvEscaped).joined(separator: ",")
         }
         return ([header] + rows).joined(separator: "\n")
     }
